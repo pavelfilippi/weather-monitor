@@ -1,0 +1,14 @@
+mutation createMeteostation {
+  addMeteostation(latitude: 45.21, longitude: 1.5, batteryStatus: 100) {
+    ... on Meteostation {
+      batteryPercentage
+      location {
+        lat
+        long
+      }
+    }
+    ... on MeteostationAlreadyExists {
+      message
+    }
+  }
+}

@@ -1,0 +1,9 @@
+query stationStatus {
+  meteostations {
+    batteryPercentage
+    location {
+      long
+      lat
+    }
+  }
+}
