@@ -82,4 +82,28 @@ class Mutation:
         return Meteostation.from_model(meteostation)
 
 
+    @strawberry.mutation(description="Remove meteostation.")
+    async def remove_meteostation(
+            self, info: Info[AppContext, Any], longitude: float, latitude: float
+    ) -> None:
+        """Delete meteostation from DB"""
+        async with info.context.db.session() as session:
+            query = select(
+                exists(
+                    select(1)
+                    .select_from(models.Meteostation)
+                    .where(and_(models.Meteostation.longitude == longitude, models.Meteostation.latitude == latitude))
+                )
+            )
+            result = await session.execute(query)
+            meteostation_exists = result.scalar()
+            if meteostation_exists:
+                query = select(models.Meteostation).where(and_(models.Meteostation.longitude == longitude, models.Meteostation.latitude == latitude))
+
+                result = await session.execute(query)
+                meteostation = result.scalar()
+
+                await session.delete(meteostation)
+
+
 schema = strawberry.Schema(query=Query, mutation=Mutation)
