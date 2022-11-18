@@ -12,5 +12,7 @@ services:
     image: mysql
     ports:
       - "3308:3306"
+    volumes:
+        - ./data/application/init.sql:/docker-entrypoint-initdb.d/init.sql
     env_file:
       - .env
