@@ -7,6 +7,8 @@ COPY pyproject.toml /weather-monitor/pyproject.toml
 WORKDIR /weather-monitor
 ENV PYTHOHNPATH=${PYTHOHNPATH}:$PWD
 
+EXPOSE 80
+
 RUN pip3 install poetry
 RUN poetry config virtualenvs.create false
 RUN poetry install --no-dev

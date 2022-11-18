@@ -12,6 +12,7 @@ strawberry-graphql = "^0.142.2"
 SQLAlchemy = "^1.4.44"
 aiomysql = "^0.1.1"
 httpx = "^0.23.0"
+python-dotenv = "^0.21.0"
 
 
 [tool.poetry.dev-dependencies]
