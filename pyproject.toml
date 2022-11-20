@@ -8,9 +8,22 @@ authors = ["Pavel Filippi <pavel.filippi@gmail.com>"]
 python = "^3.10"
 fastapi = "^0.87.0"
 uvicorn = "^0.19.0"
+strawberry-graphql = "^0.142.2"
+SQLAlchemy = "^1.4.44"
+aiomysql = "^0.1.1"
+httpx = "^0.23.0"
+
 
 [tool.poetry.dev-dependencies]
+pytest = "^7.2.0"
+black = "^22.10.0"
+mypy = "^0.991"
+flake8 = "^5.0.4"
+pytest-asyncio = "^0.20.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120
