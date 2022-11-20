@@ -55,20 +55,18 @@ NewWeatherStationOutput = strawberry.union("NewWeatherStationOutput", (WeatherSt
 class Mutation:
     @strawberry.mutation(description="Store new weather station.")
     async def add_weather_station(
-            self,
-            info: Info[AppContext, Any],
-            longitude: float,
-            latitude: float,
-            battery_status: int=100
+        self, info: Info[AppContext, Any], longitude: float, latitude: float, battery_status: int = 100
     ) -> NewWeatherStationOutput:
-        """ Store new weather station into DB """
+        """Store new weather station into DB"""
         async with info.context.db.session() as session:
             # Weather station already exists in db validation
             query = select(
                 exists(
                     select(1)
                     .select_from(models.WeatherStation)
-                    .where(and_(models.WeatherStation.longitude == longitude, models.WeatherStation.latitude == latitude))
+                    .where(
+                        and_(models.WeatherStation.longitude == longitude, models.WeatherStation.latitude == latitude)
+                    )
                 )
             )
             result = await session.execute(query)
@@ -76,29 +74,32 @@ class Mutation:
             if weather_station:
                 return WeatherStationAlreadyExists
 
-            weather_station = models.WeatherStation(battery_percentage=battery_status, longitude=longitude, latitude=latitude)
+            weather_station = models.WeatherStation(
+                battery_percentage=battery_status, longitude=longitude, latitude=latitude
+            )
             session.add(weather_station)
 
         return WeatherStation.from_model(weather_station)
 
-
     @strawberry.mutation(description="Remove weather station.")
-    async def remove_weather_station(
-            self, info: Info[AppContext, Any], longitude: float, latitude: float
-    ) -> None:
+    async def remove_weather_station(self, info: Info[AppContext, Any], longitude: float, latitude: float) -> None:
         """Delete weather station from DB"""
         async with info.context.db.session() as session:
             query = select(
                 exists(
                     select(1)
                     .select_from(models.WeatherStation)
-                    .where(and_(models.WeatherStation.longitude == longitude, models.WeatherStation.latitude == latitude))
+                    .where(
+                        and_(models.WeatherStation.longitude == longitude, models.WeatherStation.latitude == latitude)
+                    )
                 )
             )
             result = await session.execute(query)
             weather_station_exists = result.scalar()
             if weather_station_exists:
-                query = select(models.WeatherStation).where(and_(models.WeatherStation.longitude == longitude, models.WeatherStation.latitude == latitude))
+                query = select(models.WeatherStation).where(
+                    and_(models.WeatherStation.longitude == longitude, models.WeatherStation.latitude == latitude)
+                )
 
                 result = await session.execute(query)
                 weather_station = result.scalar()
