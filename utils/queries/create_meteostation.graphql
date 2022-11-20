@@ -1,13 +1,13 @@
 mutation createMeteostation {
-  addMeteostation(latitude: 45.21, longitude: 1.5, batteryStatus: 100) {
-    ... on Meteostation {
+  addWeatherStation(latitude: 21, longitude: 21, batteryStatus: 100) {
+    ... on WeatherStation {
       batteryPercentage
       location {
         lat
         long
       }
     }
-    ... on MeteostationAlreadyExists {
+    ... on WeatherStationAlreadyExists {
       message
     }
   }
