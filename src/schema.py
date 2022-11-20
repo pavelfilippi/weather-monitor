@@ -23,7 +23,7 @@ class WeatherStation:
     @staticmethod
     def from_model(model: models.WeatherStation) -> "WeatherStation":
         return WeatherStation(
-            resource_id=model.id,
+            resource_id=model.station_id,
             battery_percentage=model.battery_percentage,
             location=Location(lat=model.latitude, long=model.longitude),
         )
