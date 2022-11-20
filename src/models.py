@@ -4,8 +4,8 @@ from sqlalchemy.orm import declarative_base
 Base = declarative_base()
 
 
-class Meteostation(Base):
-    __tablename__ = "meteostations"
+class WeatherStation(Base):
+    __tablename__ = "weather_stations"
 
     id = Column(Integer, nullable=False, primary_key=True)
     battery_percentage = Column(Float, nullable=False)

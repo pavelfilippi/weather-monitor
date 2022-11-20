@@ -32,4 +32,6 @@ class Database:
 
 def get_database(config: Config = Depends(get_config)):
     """Database dependency factory"""
-    return Database(f"mysql+aiomysql://{config.DB_USER}:{config.DB_PASS}@{config.DB_HOST}:{config.DB_PORT}/{config.DB_NAME}")
+    return Database(
+        f"mysql+aiomysql://{config.DB_USER}:{config.DB_PASS}@{config.DB_HOST}:{config.DB_PORT}/{config.DB_NAME}"
+    )

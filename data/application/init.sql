@@ -2,7 +2,7 @@ CREATE DATABASE IF NOT EXISTS weather_monitor;
 
 USE weather_monitor;
 
-CREATE TABLE IF NOT EXISTS meteostations (
+CREATE TABLE IF NOT EXISTS weather_stations (
 	id INTEGER NOT NULL AUTO_INCREMENT,
 	battery_percentage FLOAT NOT NULL,
 	longitude FLOAT NOT NULL,

@@ -1,5 +1,5 @@
 query stationStatus {
-  meteostations {
+  weatherStations {
     batteryPercentage
     location {
       long

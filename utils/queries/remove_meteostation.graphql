@@ -1,3 +1,3 @@
 mutation removeMeteostation {
-  removeMeteostation(latitude: 21, longitude: 1.5)
+  removeWeatherStation(latitude: 21, longitude: 21)
 }
