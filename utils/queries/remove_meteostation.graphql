@@ -1,3 +1,7 @@
 mutation removeMeteostation {
-  removeWeatherStation(latitude: 21, longitude: 21)
+  removeWeatherStation(resourceId: 1) {
+    resourceId
+    message
+    resourceRemoved
+  }
 }

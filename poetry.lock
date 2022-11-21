@@ -31,6 +31,19 @@ test = ["coverage[toml] (>=4.5)", "hypothesis (>=4.0)", "pytest (>=7.0)", "pytes
 trio = ["trio (>=0.16,<0.22)"]
 
 [[package]]
+name = "asyncpg"
+version = "0.27.0"
+description = "An asyncio PostgreSQL driver"
+category = "main"
+optional = false
+python-versions = ">=3.7.0"
+
+[package.extras]
+dev = ["Cython (>=0.29.24,<0.30.0)", "pytest (>=6.0)", "Sphinx (>=4.1.2,<4.2.0)", "sphinxcontrib-asyncio (>=0.3.0,<0.4.0)", "sphinx-rtd-theme (>=0.5.2,<0.6.0)", "flake8 (>=5.0.4,<5.1.0)", "uvloop (>=0.15.3)"]
+docs = ["Sphinx (>=4.1.2,<4.2.0)", "sphinxcontrib-asyncio (>=0.3.0,<0.4.0)", "sphinx-rtd-theme (>=0.5.2,<0.6.0)"]
+test = ["flake8 (>=5.0.4,<5.1.0)", "uvloop (>=0.15.3)"]
+
+[[package]]
 name = "attrs"
 version = "22.1.0"
 description = "Classes Without Boilerplate"
@@ -541,11 +554,12 @@ standard = ["colorama (>=0.4)", "httptools (>=0.5.0)", "python-dotenv (>=0.13)",
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "35d06a755a01a0160572181eaa4deb703d21ce46f663c1f19c3f3d0e01b1b5be"
+content-hash = "d0db587a698f4088b14f5aa90e823cf8b3f7bfbea91f9530cd07be7a0210742a"
 
 [metadata.files]
 aiomysql = []
 anyio = []
+asyncpg = []
 attrs = []
 black = []
 certifi = []

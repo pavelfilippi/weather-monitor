@@ -23,7 +23,7 @@ class WeatherStation:
     @staticmethod
     def from_model(model: models.WeatherStation) -> "WeatherStation":
         return WeatherStation(
-            resource_id=model.id,
+            resource_id=model.station_id,
             battery_percentage=model.battery_percentage,
             location=Location(lat=model.latitude, long=model.longitude),
         )
@@ -55,19 +55,10 @@ NewWeatherStationOutput = strawberry.union("NewWeatherStationOutput", (WeatherSt
 
 
 @strawberry.type
-class WeatherStationRemoved:
-    removed_resource_id: int
-
-
-@strawberry.type
-class WeatherStationNotFound:
+class RemoveWeatherStationOutput:
     resource_id: int
-    message: str = "Weather station not found."
-
-
-RemoveWeatherStationOutput = strawberry.union(
-    "RemoveWeatherStationOutput", (WeatherStationRemoved, WeatherStationNotFound)
-)
+    message: str
+    resource_removed: bool
 
 
 @strawberry.type
@@ -105,19 +96,25 @@ class Mutation:
         """Delete weather station from DB"""
         async with info.context.db.session() as session:
             query = select(
-                exists(select(1).select_from(models.WeatherStation).where(models.WeatherStation.id == resource_id))
+                exists(
+                    select(1).select_from(models.WeatherStation).where(models.WeatherStation.station_id == resource_id)
+                )
             )
             result = await session.execute(query)
             weather_station_exists = result.scalar()
             if weather_station_exists:
-                query = select(models.WeatherStation).where(models.WeatherStation.id == resource_id)
+                query = select(models.WeatherStation).where(models.WeatherStation.station_id == resource_id)
 
                 result = await session.execute(query)
                 weather_station = result.scalar()
 
                 await session.delete(weather_station)
-                return WeatherStationRemoved(removed_resource_id=resource_id)
-            return WeatherStationNotFound(resource_id=resource_id)
+                return RemoveWeatherStationOutput(
+                    resource_id=resource_id, resource_removed=True, message="Weather station successfully removed."
+                )
+            return RemoveWeatherStationOutput(
+                resource_id=resource_id, resource_removed=False, message="Weather station not found."
+            )
 
 
 schema = strawberry.Schema(query=Query, mutation=Mutation)
