@@ -1,9 +1,16 @@
 query stationStatus {
   weatherStations {
-    batteryPercentage
+    resourceId
     location {
       long
       lat
+    }
+    weatherStationConditions {
+      time
+      batteryPercentage
+      temperature
+      humidity
+      pressure
     }
   }
 }
