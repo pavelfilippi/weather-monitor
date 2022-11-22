@@ -43,7 +43,7 @@ class WeatherStation:
 class StationCondition:
     time: datetime.datetime
     resource_id: int
-    battery_percentage: float
+    battery_percentage: Optional[float] = None
     temperature: Optional[float] = None
     humidity: Optional[float] = None
     pressure: Optional[float] = None
@@ -64,7 +64,7 @@ class StationCondition:
 class StationConditionInput:
     time: datetime.datetime
     resource_id: int
-    battery_percentage: float
+    battery_percentage: Optional[float] = None
     temperature: Optional[float] = None
     humidity: Optional[float] = None
     pressure: Optional[float] = None
@@ -180,8 +180,6 @@ class Mutation:
         self, info: Info[AppContext, Any], station_condition: StationConditionInput
     ) -> StationConditionOutput:
         """Insert measured values from weather station"""
-        if not station_condition.battery_percentage:
-            return StationConditionOutput(error="Battery value is necessary.")
 
         async with info.context.db.session() as session:
             new_condition = models.StationCondition(

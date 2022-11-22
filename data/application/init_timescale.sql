@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS weather_real_time
 (
     time TIMESTAMPTZ NOT NULL,
     station_id         INT              NOT NULL,
-    battery_percentage FLOAT            NOT NULL,
+    battery_percentage FLOAT            NULL,
     temperature        DOUBLE PRECISION NULL,
     humidity           DOUBLE PRECISION NULL,
     pressure           DOUBLE PRECISION NULL
