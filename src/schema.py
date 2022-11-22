@@ -76,6 +76,20 @@ class Query:
 
         return [WeatherStation.from_model(station) for station in weather_stations]
 
+    @strawberry.field(description="Get weather data.")
+    async def weather_data(self, info: Info[AppContext, Any]) -> Optional[List[StationCondition]]:
+        """Load all weather data"""
+        async with info.context.db.session() as session:
+            query = select(models.StationCondition)
+
+            result = await session.execute(query)
+            weather_conditions = result.scalars()
+
+        if not weather_conditions:
+            return None
+
+        return [StationCondition.from_model(condition) for condition in weather_conditions]
+
 
 @strawberry.type
 class WeatherStationAlreadyExists:
