@@ -18,5 +18,6 @@ CREATE TABLE IF NOT EXISTS weather_stations
 (
     station_id serial PRIMARY KEY,
     longitude  FLOAT NOT NULL,
-    latitude   FLOAT NOT NULL
+    latitude   FLOAT NOT NULL,
+    api_key    TEXT  NOT NULL
 );

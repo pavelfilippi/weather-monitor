@@ -1,7 +1,7 @@
 mutation createMeteostation {
-  addWeatherStation(latitude: 21, longitude: 21, batteryStatus: 100) {
+  addWeatherStation(latitude: 1, longitude: 42, apiKey: "akljnv13bvi2vfo0b0bw") {
     ... on WeatherStation {
-      batteryPercentage
+      resourceId
       location {
         lat
         long

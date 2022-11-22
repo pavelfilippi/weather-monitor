@@ -63,7 +63,6 @@ class StationCondition:
 @strawberry.input
 class StationConditionInput:
     time: datetime.datetime
-    resource_id: int
     battery_percentage: Optional[float] = None
     temperature: Optional[float] = None
     humidity: Optional[float] = None
@@ -126,7 +125,7 @@ class RemoveWeatherStationOutput:
 class Mutation:
     @strawberry.mutation(description="Store new weather station.")
     async def add_weather_station(
-        self, info: Info[AppContext, Any], longitude: float, latitude: float
+        self, info: Info[AppContext, Any], longitude: float, latitude: float, api_key: str
     ) -> NewWeatherStationOutput:
         """Store new weather station into DB"""
         async with info.context.db.session() as session:
@@ -145,7 +144,7 @@ class Mutation:
             if weather_station:
                 return WeatherStationAlreadyExists
 
-            weather_station = models.WeatherStation(longitude=longitude, latitude=latitude)
+            weather_station = models.WeatherStation(longitude=longitude, latitude=latitude, api_key=api_key)
             session.add(weather_station)
 
         return WeatherStation.from_model(weather_station)
@@ -180,11 +179,14 @@ class Mutation:
         self, info: Info[AppContext, Any], station_condition: StationConditionInput
     ) -> StationConditionOutput:
         """Insert measured values from weather station"""
+        auth_station = info.context.auth_weather_station
+        if not auth_station:
+            return StationConditionOutput(error="Unauthorized Access.")
 
         async with info.context.db.session() as session:
             new_condition = models.StationCondition(
                 time=station_condition.time,
-                station_id=station_condition.resource_id,
+                station_id=auth_station.station_id,
                 battery_percentage=station_condition.battery_percentage,
                 temperature=station_condition.temperature,
                 humidity=station_condition.humidity,

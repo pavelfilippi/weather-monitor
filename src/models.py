@@ -1,4 +1,4 @@
-from sqlalchemy import UniqueConstraint, Column, Integer, Float, TIMESTAMP
+from sqlalchemy import UniqueConstraint, Column, Integer, Float, TIMESTAMP, Text
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import ForeignKey
@@ -13,6 +13,7 @@ class WeatherStation(Base):
     station_id = Column(Integer, nullable=False, primary_key=True)
     longitude = Column(Float, nullable=False)
     latitude = Column(Float, nullable=False)
+    api_key = Column(Text, nullable=False)
 
     weather_real_time = relationship("StationCondition", back_populates="weather_station_rel")
 
