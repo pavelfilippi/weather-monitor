@@ -21,7 +21,6 @@ class StationCondition(Base):
     __tablename__ = "weather_real_time"
 
     time = Column(TIMESTAMP, primary_key=True, nullable=False)
-    # Should have public. ?
     station_id = Column(Integer, ForeignKey("weather_stations.station_id"), nullable=False)
 
     weather_station_rel = relationship("WeatherStation", back_populates="weather_real_time")
