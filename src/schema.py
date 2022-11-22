@@ -44,9 +44,9 @@ class StationCondition:
     time: datetime.datetime
     resource_id: int
     battery_percentage: float
-    temperature: float
-    humidity: float
-    pressure: float
+    temperature: Optional[float] = None
+    humidity: Optional[float] = None
+    pressure: Optional[float] = None
 
     @staticmethod
     def from_model(station_condition: models.StationCondition) -> "StationCondition":
@@ -58,6 +58,22 @@ class StationCondition:
             humidity=station_condition.humidity,
             pressure=station_condition.pressure,
         )
+
+
+@strawberry.input
+class StationConditionInput:
+    time: datetime.datetime
+    resource_id: int
+    battery_percentage: float
+    temperature: Optional[float] = None
+    humidity: Optional[float] = None
+    pressure: Optional[float] = None
+
+
+@strawberry.type
+class StationConditionOutput:
+    station_conditions: Optional[StationCondition] = None
+    error: Optional[str] = None
 
 
 @strawberry.type
@@ -158,6 +174,27 @@ class Mutation:
             return RemoveWeatherStationOutput(
                 resource_id=resource_id, resource_removed=False, message="Weather station not found."
             )
+
+    @strawberry.mutation(description="Insert weather data")
+    async def insert_weather_data(
+        self, info: Info[AppContext, Any], station_condition: StationConditionInput
+    ) -> StationConditionOutput:
+        """Insert measured values from weather station"""
+        if not station_condition.battery_percentage:
+            return StationConditionOutput(error="Battery value is necessary.")
+
+        async with info.context.db.session() as session:
+            new_condition = models.StationCondition(
+                time=station_condition.time,
+                station_id=station_condition.resource_id,
+                battery_percentage=station_condition.battery_percentage,
+                temperature=station_condition.temperature,
+                humidity=station_condition.humidity,
+                pressure=station_condition.pressure,
+            )
+            session.add(new_condition)
+
+        return StationConditionOutput(station_conditions=StationCondition.from_model(new_condition))
 
 
 schema = strawberry.Schema(query=Query, mutation=Mutation)
