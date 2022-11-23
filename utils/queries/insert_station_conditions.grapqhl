@@ -1,6 +1,12 @@
+# Header:
+# {
+#   "Authorization": "Bearer akljnv13bvi2vfo0b0bw"
+# }
+
+
 mutation insertStationConditions {
   insertWeatherData(
-    stationCondition: {time: "2020-11-21T21:38:11.116317", resourceId: 1, batteryPercentage: 55555, temperature: 5}
+    stationCondition: {time: "2020-11-21T21:49:11", temperature: 4}
   ) {
     stationConditions {
       resourceId
