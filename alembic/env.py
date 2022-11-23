@@ -1,9 +1,23 @@
+import os
 from logging.config import fileConfig
 
+from alembic import context
+from dotenv import load_dotenv
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
-from alembic import context
+load_dotenv()
+
+DB_HOST: str = os.getenv("DB_HOST")
+DB_USER: str = os.getenv("DB_USER")
+DB_PASS: str = os.getenv("POSTGRES_PASSWORD")
+DB_NAME: str = os.getenv("POSTGRES_DB")
+
+connection_string = f'postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}'
+
+config = context.config
+config.set_main_option('sqlalchemy.url', connection_string)
+
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
