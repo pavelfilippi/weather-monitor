@@ -60,21 +60,6 @@ class StationCondition:
         )
 
 
-@strawberry.input
-class StationConditionInput:
-    time: datetime.datetime
-    battery_percentage: Optional[float] = None
-    temperature: Optional[float] = None
-    humidity: Optional[float] = None
-    pressure: Optional[float] = None
-
-
-@strawberry.type
-class StationConditionOutput:
-    station_conditions: Optional[StationCondition] = None
-    error: Optional[str] = None
-
-
 @strawberry.type
 class Query:
     @strawberry.field(description="Gets data for all weather stations.")
@@ -173,28 +158,3 @@ class Mutation:
             return RemoveWeatherStationOutput(
                 resource_id=resource_id, resource_removed=False, message="Weather station not found."
             )
-
-    @strawberry.mutation(description="Insert weather data")
-    async def insert_weather_data(
-        self, info: Info[AppContext, Any], station_condition: StationConditionInput
-    ) -> StationConditionOutput:
-        """Insert measured values from weather station"""
-        auth_station = info.context.auth_weather_station
-        if not auth_station:
-            return StationConditionOutput(error="Unauthorized Access.")
-
-        async with info.context.db.session() as session:
-            new_condition = models.StationCondition(
-                time=station_condition.time,
-                station_id=auth_station.station_id,
-                battery_percentage=station_condition.battery_percentage,
-                temperature=station_condition.temperature,
-                humidity=station_condition.humidity,
-                pressure=station_condition.pressure,
-            )
-            session.add(new_condition)
-
-        return StationConditionOutput(station_conditions=StationCondition.from_model(new_condition))
-
-
-schema = strawberry.Schema(query=Query, mutation=Mutation)
