@@ -13,11 +13,11 @@ from src.dependencies.database import get_database
 async def get_auth_weather_station(
         request: Request,
         db: Database = Depends(get_database),
-        authorization: str = Header(default=""),
+        Authorization: str | None = Header(default="Bearer <api_key>"),
 ) -> Optional[WeatherStation]:
     """ Get weather station based on request header API key """
 
-    authorization = request.headers.get("authorization", "")
+    authorization = request.headers.get("Authorization", "")
     authorization_split = authorization.split(" ", 1)
 
     if len(authorization_split) != 2:
