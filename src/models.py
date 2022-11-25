@@ -15,7 +15,7 @@ class WeatherStation(Base):
     latitude = Column(Float, nullable=False)
     api_key = Column(Text, nullable=False)
 
-    weather_real_time = relationship("StationCondition", back_populates="weather_station_rel")
+    weather_real_time = relationship("StationCondition", back_populates="weather_station_rel", cascade="all, delete")
 
 
 class StationCondition(Base):
