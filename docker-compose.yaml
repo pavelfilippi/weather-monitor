@@ -15,3 +15,5 @@ services:
       - 5432:5432
     env_file:
       - .env
+    volumes:
+      - ./manual_conversion/init_timescale.sql:/docker-entrypoint-initdb.d/init.sql
