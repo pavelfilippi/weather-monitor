@@ -1,5 +1,7 @@
 mutation createMeteostation {
-  addWeatherStation(latitude: 1, longitude: 42, apiKey: "akljnv13bvi2vfo0b0bw") {
+  addWeatherStation(
+    weatherStation: {longitude: 23, latitude: 42, apiKey: "random_key"}
+  ) {
     ... on WeatherStation {
       resourceId
       location {
