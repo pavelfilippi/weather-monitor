@@ -1,4 +1,4 @@
-from sqlalchemy import UniqueConstraint, Column, Integer, Float, TIMESTAMP, Text
+from sqlalchemy import UniqueConstraint, Column, Integer, Float, TIMESTAMP, Text, event, DDL, Index
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import ForeignKey
@@ -30,3 +30,7 @@ class StationCondition(Base):
     temperature = Column(Float, nullable=True)
     humidity = Column(Float, nullable=True)
     pressure = Column(Float, nullable=True)
+
+
+Index("ix_station_id_time", StationCondition.station_id, StationCondition.time, unique=False)
+Index("weather_real_time_time_idx", StationCondition.time, unique=False)
