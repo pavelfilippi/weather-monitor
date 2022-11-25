@@ -60,6 +60,13 @@ class StationCondition:
         )
 
 
+@strawberry.input(description="Lets users filter based on time (from/to included)")
+class TimeFilter:
+    """Filtering time from/to (included)"""
+    time_from: Optional[datetime.datetime] = None
+    time_to: Optional[datetime.datetime] = None
+
+
 @strawberry.type
 class Query:
     @strawberry.field(description="Gets data for all weather stations.")
@@ -77,10 +84,19 @@ class Query:
         return [WeatherStation.from_model(station) for station in weather_stations]
 
     @strawberry.field(description="Get weather data.")
-    async def weather_data(self, info: Info[AppContext, Any]) -> Optional[List[StationCondition]]:
+    async def weather_data(
+        self, info: Info[AppContext, Any], time_filter: Optional[TimeFilter] = None
+    ) -> Optional[List[StationCondition]]:
         """Load all weather data"""
         async with info.context.db.session() as session:
             query = select(models.StationCondition)
+
+            # Filter based on time from/to
+            # Check time_filter to avoid  "'NoneType' object has no attribute 'time_to'", error
+            if time_filter and time_filter.time_to:
+                query = query.filter(models.StationCondition.time <= time_filter.time_to)
+            if time_filter and time_filter.time_from:
+                query = query.filter(models.StationCondition.time >= time_filter.time_from)
 
             result = await session.execute(query)
             weather_conditions = result.scalars()
