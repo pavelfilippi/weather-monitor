@@ -158,3 +158,6 @@ class Mutation:
             return RemoveWeatherStationOutput(
                 resource_id=resource_id, resource_removed=False, message="Weather station not found."
             )
+
+
+schema = strawberry.Schema(query=Query, mutation=Mutation)
