@@ -1,12 +1,12 @@
 import datetime
 from typing import Optional
 
-from fastapi import Depends, Header, HTTPException, APIRouter
+from fastapi import Depends, HTTPException, APIRouter
 from pydantic import BaseModel
 
-from dependencies.auth import get_auth_weather_station
-from dependencies.database import get_database, Database
-from models import WeatherStation
+from src.dependencies.auth import get_auth_weather_station
+from src.dependencies.database import get_database, Database
+from src.models import WeatherStation
 from src import models
 
 router = APIRouter()

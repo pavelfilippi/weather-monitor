@@ -3,7 +3,7 @@ from strawberry.fastapi import GraphQLRouter
 
 from src.dependencies.context import AppContext
 from src.schema import schema
-import weather_conditions
+from src import weather_conditions
 
 app = FastAPI()
 
