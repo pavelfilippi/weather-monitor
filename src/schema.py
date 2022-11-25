@@ -106,11 +106,18 @@ class RemoveWeatherStationOutput:
     resource_removed: bool
 
 
+@strawberry.input
+class WeeatherStationInput:
+    longitude: float
+    latitude: float
+    api_key: str
+
+
 @strawberry.type
 class Mutation:
     @strawberry.mutation(description="Store new weather station.")
     async def add_weather_station(
-        self, info: Info[AppContext, Any], longitude: float, latitude: float, api_key: str
+        self, info: Info[AppContext, Any], weather_station: WeeatherStationInput
     ) -> NewWeatherStationOutput:
         """Store new weather station into DB"""
         async with info.context.db.session() as session:
@@ -120,19 +127,24 @@ class Mutation:
                     select(1)
                     .select_from(models.WeatherStation)
                     .where(
-                        and_(models.WeatherStation.longitude == longitude, models.WeatherStation.latitude == latitude)
+                        and_(
+                            models.WeatherStation.longitude == weather_station.longitude,
+                            models.WeatherStation.latitude == weather_station.latitude,
+                        )
                     )
                 )
             )
             result = await session.execute(query)
-            weather_station = result.scalar()
-            if weather_station:
+            existing_weather_station = result.scalar()
+            if existing_weather_station:
                 return WeatherStationAlreadyExists
 
-            weather_station = models.WeatherStation(longitude=longitude, latitude=latitude, api_key=api_key)
-            session.add(weather_station)
+            new_weather_station = models.WeatherStation(
+                longitude=weather_station.longitude, latitude=weather_station.latitude, api_key=weather_station.api_key
+            )
+            session.add(new_weather_station)
 
-        return WeatherStation.from_model(weather_station)
+        return WeatherStation.from_model(new_weather_station)
 
     @strawberry.mutation(description="Remove weather station.")
     async def remove_weather_station(self, info: Info[AppContext, Any], resource_id: int) -> RemoveWeatherStationOutput:
