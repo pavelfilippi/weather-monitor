@@ -1,0 +1,15 @@
+POST http://127.0.0.1:8000/conditions
+accept: application/json
+Authorization: Bearer random_key
+Content-Type: application/json
+
+{
+  "time": "2022-11-24T11:01:37.123",
+  "battery_percentage": 0,
+  "temperature": 0,
+  "humidity": 0,
+  "pressure": 0
+}
+
+###
+
