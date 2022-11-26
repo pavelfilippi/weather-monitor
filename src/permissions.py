@@ -9,7 +9,6 @@ from src.dependencies.context import AppContext
 from src.models import MonitorUser
 
 
-# TODO: How to get value from?
 class IsAuthenticated(BasePermission):
     message = "User is not authenticated"
 
@@ -31,13 +30,5 @@ class IsAuthenticated(BasePermission):
             user = result.scalar()
 
         if user:
-            return user
-
-
-
-
-
-# {
-#   "Authorize": "Bearer <username>"
-# }
-
+            info.context.request.auth_user = user
+            return True

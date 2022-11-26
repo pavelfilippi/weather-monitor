@@ -159,6 +159,8 @@ class Mutation:
             if existing_weather_station:
                 return WeatherStationAlreadyExists
 
+            auth_user = info.context.request.auth_user  # Set in permission
+
             new_weather_station = models.WeatherStation(
                 longitude=weather_station.longitude, latitude=weather_station.latitude, api_key=weather_station.api_key, user_id=auth_user.id
             )
