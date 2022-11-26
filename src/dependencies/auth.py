@@ -1,13 +1,13 @@
 from typing import Optional
 
 from fastapi import Depends
-from fastapi import Request
 from fastapi import Header
+from fastapi import Request
 from sqlalchemy import select
 
-from src.models import WeatherStation
 from src.dependencies.database import Database
 from src.dependencies.database import get_database
+from src.models import WeatherStation
 
 
 async def get_auth_weather_station(

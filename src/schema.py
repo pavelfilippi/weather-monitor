@@ -1,11 +1,13 @@
-from typing import Any, Optional, List
 import datetime
+from typing import Any, Optional, List
+
 import strawberry
 from sqlalchemy import select, exists, and_
 from strawberry.types import Info
 
 from src import models
 from src.dependencies.context import AppContext
+from src.permissions import IsAuthenticated
 
 
 @strawberry.type
@@ -131,7 +133,7 @@ class WeeatherStationInput:
 
 @strawberry.type
 class Mutation:
-    @strawberry.mutation(description="Store new weather station.")
+    @strawberry.mutation(description="Store new weather station.", permission_classes=[IsAuthenticated])
     async def add_weather_station(
         self, info: Info[AppContext, Any], weather_station: WeeatherStationInput
     ) -> NewWeatherStationOutput:
@@ -150,13 +152,15 @@ class Mutation:
                     )
                 )
             )
+
+
             result = await session.execute(query)
             existing_weather_station = result.scalar()
             if existing_weather_station:
                 return WeatherStationAlreadyExists
 
             new_weather_station = models.WeatherStation(
-                longitude=weather_station.longitude, latitude=weather_station.latitude, api_key=weather_station.api_key
+                longitude=weather_station.longitude, latitude=weather_station.latitude, api_key=weather_station.api_key, user_id=auth_user.id
             )
             session.add(new_weather_station)
 
