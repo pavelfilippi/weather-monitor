@@ -16,7 +16,8 @@ class WeatherStation(Base):
     api_key = Column(Text, nullable=False)
 
     weather_real_time = relationship("StationCondition", back_populates="weather_station_rel", cascade="all, delete")
-
+    monitor_user_rel = relationship("MonitorUser", back_populates="weather_station")
+    user_id = Column(Integer, ForeignKey("monitor_user.id"), nullable=False)
 
 class StationCondition(Base):
     __tablename__ = "weather_real_time"
@@ -38,6 +39,8 @@ class MonitorUser(Base):
     id = Column(Integer, primary_key=True)
     username = Column(String(80), unique=True, nullable=False)
     password = Column(String(128), nullable=False)
+
+    weather_station = relationship("WeatherStation", back_populates="monitor_user_rel", cascade="all, delete")
 
 
 Index("ix_station_id_time", StationCondition.station_id, StationCondition.time, unique=False)
