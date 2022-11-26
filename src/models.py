@@ -1,4 +1,4 @@
-from sqlalchemy import UniqueConstraint, Column, Integer, Float, TIMESTAMP, Text, event, DDL, Index
+from sqlalchemy import UniqueConstraint, Column, Integer, Float, TIMESTAMP, Text, event, DDL, Index, String
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import ForeignKey
@@ -30,6 +30,14 @@ class StationCondition(Base):
     temperature = Column(Float, nullable=True)
     humidity = Column(Float, nullable=True)
     pressure = Column(Float, nullable=True)
+
+
+class MonitorUser(Base):
+    __tablename__ = "monitor_user"
+
+    id = Column(Integer, primary_key=True)
+    username = Column(String(80), unique=True, nullable=False)
+    password = Column(String(128), nullable=False)
 
 
 Index("ix_station_id_time", StationCondition.station_id, StationCondition.time, unique=False)
