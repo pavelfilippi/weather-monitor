@@ -1,0 +1,7 @@
+mutation updateWeatherStation {
+  updateWeatherStation(weatherStationUpdate: {stationId: 4, latitude:21}) {
+    resourceId
+    message
+    resourceUpdated
+  }
+}
