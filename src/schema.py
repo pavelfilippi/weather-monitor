@@ -65,6 +65,7 @@ class StationCondition:
 @strawberry.input(description="Lets users filter based on time (from/to included)")
 class TimeFilter:
     """Filtering time from/to (included)"""
+
     time_from: Optional[datetime.datetime] = None
     time_to: Optional[datetime.datetime] = None
 
@@ -172,7 +173,6 @@ class Mutation:
                 )
             )
 
-
             result = await session.execute(query)
             existing_weather_station = result.scalar()
             if existing_weather_station:
@@ -181,7 +181,10 @@ class Mutation:
             auth_user = info.context.request.auth_user  # Set in permission
 
             new_weather_station = models.WeatherStation(
-                longitude=weather_station.longitude, latitude=weather_station.latitude, api_key=weather_station.api_key, user_id=auth_user.id
+                longitude=weather_station.longitude,
+                latitude=weather_station.latitude,
+                api_key=weather_station.api_key,
+                user_id=auth_user.id,
             )
             session.add(new_weather_station)
 
@@ -237,7 +240,9 @@ class Mutation:
             result = await session.execute(query)
             weather_station_exists = result.scalar()
             if weather_station_exists:
-                query = select(models.WeatherStation).where(models.WeatherStation.station_id == weather_station_update.station_id)
+                query = select(models.WeatherStation).where(
+                    models.WeatherStation.station_id == weather_station_update.station_id
+                )
                 result = await session.execute(query)
                 weather_station = result.scalar()
 

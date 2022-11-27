@@ -19,6 +19,7 @@ class WeatherStation(Base):
     monitor_user_rel = relationship("MonitorUser", back_populates="weather_station")
     user_id = Column(Integer, ForeignKey("monitor_user.id"), nullable=False)
 
+
 class StationCondition(Base):
     __tablename__ = "weather_real_time"
 
