@@ -1,11 +1,13 @@
-from typing import Any, Optional, List
 import datetime
+from typing import Any, Optional, List
+
 import strawberry
 from sqlalchemy import select, exists, and_
 from strawberry.types import Info
 
 from src import models
 from src.dependencies.context import AppContext
+from src.permissions import IsAuthenticated
 
 
 @strawberry.type
@@ -131,7 +133,7 @@ class WeeatherStationInput:
 
 @strawberry.type
 class Mutation:
-    @strawberry.mutation(description="Store new weather station.")
+    @strawberry.mutation(description="Store new weather station.", permission_classes=[IsAuthenticated])
     async def add_weather_station(
         self, info: Info[AppContext, Any], weather_station: WeeatherStationInput
     ) -> NewWeatherStationOutput:
@@ -150,19 +152,23 @@ class Mutation:
                     )
                 )
             )
+
+
             result = await session.execute(query)
             existing_weather_station = result.scalar()
             if existing_weather_station:
                 return WeatherStationAlreadyExists
 
+            auth_user = info.context.request.auth_user  # Set in permission
+
             new_weather_station = models.WeatherStation(
-                longitude=weather_station.longitude, latitude=weather_station.latitude, api_key=weather_station.api_key
+                longitude=weather_station.longitude, latitude=weather_station.latitude, api_key=weather_station.api_key, user_id=auth_user.id
             )
             session.add(new_weather_station)
 
         return WeatherStation.from_model(new_weather_station)
 
-    @strawberry.mutation(description="Remove weather station.")
+    @strawberry.mutation(description="Remove weather station.", permission_classes=[IsAuthenticated])
     async def remove_weather_station(self, info: Info[AppContext, Any], resource_id: int) -> RemoveWeatherStationOutput:
         """Delete weather station from DB"""
         async with info.context.db.session() as session:
@@ -174,10 +180,19 @@ class Mutation:
             result = await session.execute(query)
             weather_station_exists = result.scalar()
             if weather_station_exists:
+                auth_user = info.context.request.auth_user
                 query = select(models.WeatherStation).where(models.WeatherStation.station_id == resource_id)
 
                 result = await session.execute(query)
                 weather_station = result.scalar()
+
+                # Check if deleting own station
+                if weather_station.user_id != auth_user.id:
+                    return RemoveWeatherStationOutput(
+                        resource_id=weather_station.station_id,
+                        message="Cannot remove foreign weather station!",
+                        resource_removed=False,
+                    )
 
                 await session.delete(weather_station)
                 return RemoveWeatherStationOutput(
