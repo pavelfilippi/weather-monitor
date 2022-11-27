@@ -2,7 +2,7 @@ import datetime
 from typing import Any, Optional, List
 
 import strawberry
-from sqlalchemy import select, exists, and_
+from sqlalchemy import select, exists, and_, update
 from strawberry.types import Info
 
 from src import models
@@ -131,6 +131,26 @@ class WeeatherStationInput:
     api_key: str
 
 
+@strawberry.input
+class StationUpdate:
+    station_id: int
+    longitude: Optional[float] = None
+    latitude: Optional[float] = None
+    api_key: Optional[str] = None
+
+    def as_dict(self):
+        original = dict(longitude=self.longitude, latitude=self.latitude, api_key=self.api_key)
+        return {k: v for k, v in original.items() if v is not None}
+
+
+@strawberry.type
+class UpdateStationOutput:
+    resource_id: int
+    message: str
+    resource_updated: bool
+
+
+
 @strawberry.type
 class Mutation:
     @strawberry.mutation(description="Store new weather station.", permission_classes=[IsAuthenticated])
@@ -200,6 +220,56 @@ class Mutation:
                 )
             return RemoveWeatherStationOutput(
                 resource_id=resource_id, resource_removed=False, message="Weather station not found."
+            )
+
+    @strawberry.mutation(description="Update weather station", permission_classes=[IsAuthenticated])
+    async def update_weather_station(
+        self, info: Info[AppContext, Any], weather_station_update: StationUpdate
+    ) -> UpdateStationOutput:
+        """Update weather station"""
+        async with info.context.db.session() as session:
+            query = select(
+                exists(
+                    select(1)
+                    .select_from(models.WeatherStation)
+                    .where(models.WeatherStation.station_id == weather_station_update.station_id)
+                )
+            )
+            result = await session.execute(query)
+            weather_station_exists = result.scalar()
+            if weather_station_exists:
+                query = select(models.WeatherStation).where(models.WeatherStation.station_id == weather_station_update.station_id)
+                result = await session.execute(query)
+                weather_station = result.scalar()
+
+                auth_user = info.context.request.auth_user
+                if weather_station.user_id != auth_user.id:
+                    return UpdateStationOutput(
+                        resource_id=weather_station.station_id,
+                        message="Cannot update foreign weather station!",
+                        resource_updated=False,
+                    )
+                if not weather_station_update.as_dict():
+                    return UpdateStationOutput(
+                        resource_id=weather_station.station_id,
+                        message="Nothing to update",
+                        resource_updated=False,
+                    )
+                query = (
+                    update(models.WeatherStation)
+                    .where(models.WeatherStation.station_id == weather_station.station_id)
+                    .values(**weather_station_update.as_dict())
+                )
+                await session.execute(query)
+                return UpdateStationOutput(
+                    resource_id=weather_station.station_id,
+                    message="Station successfully udpated.",
+                    resource_updated=True,
+                )
+            return UpdateStationOutput(
+                resource_id=weather_station_update.station_id,
+                message="Station not found.",
+                resource_updated=False,
             )
 
 
