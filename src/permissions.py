@@ -1,4 +1,3 @@
-
 import typing
 
 from sqlalchemy import select
