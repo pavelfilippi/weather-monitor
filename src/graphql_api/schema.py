@@ -7,7 +7,7 @@ from strawberry.types import Info
 
 from src import models
 from src.dependencies.context import AppContext
-from src.permissions import IsAuthenticated
+from src.graphql_api.permissions import IsAuthenticated
 
 
 @strawberry.type
