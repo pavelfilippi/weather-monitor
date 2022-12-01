@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
 from sqlalchemy import select
 
-from dependencies.database import get_database, Database
+from src.dependencies.database import get_database, Database
 from src.models import MonitorUser
 
 router = APIRouter()

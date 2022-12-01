@@ -1,16 +1,28 @@
 version: "3.9"
 services:
   web:
-    build: .
+    container_name: backend
+    build:
+      context: .
+      dockerfile: Dockerfile
     command: bash -c "alembic upgrade head && uvicorn src.main:app --host 0.0.0.0 --port 80 --reload"
     ports:
       - "80:80"
     env_file:
       - .env
     depends_on:
-      - timescaledb
+      timescaledb:
+        condition: service_healthy
   timescaledb:
     image: timescale/timescaledb:latest-pg14
+    container_name: timescaledb
+    environment:
+      - PGUSER=postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     ports:
       - 5432:5432
     env_file:
