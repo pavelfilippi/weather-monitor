@@ -1,7 +1,7 @@
-from sqlalchemy import UniqueConstraint, Column, Integer, Float, TIMESTAMP, Text, event, DDL, Index, String
+from sqlalchemy import ForeignKey
+from sqlalchemy import UniqueConstraint, Column, Integer, Float, TIMESTAMP, Text, Index, String
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship
-from sqlalchemy import ForeignKey
 
 Base = declarative_base()
 
