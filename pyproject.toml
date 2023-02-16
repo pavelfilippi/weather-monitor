@@ -6,9 +6,9 @@ authors = ["Pavel Filippi <pavel.filippi@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-fastapi = "^0.87.0"
-uvicorn = "^0.19.0"
-strawberry-graphql = "^0.142.2"
+fastapi = "^0.92.0"
+uvicorn = "^0.20.0"
+strawberry-graphql = "^0.156.4"
 SQLAlchemy = "^1.4.44"
 httpx = "^0.23.0"
 python-dotenv = "^0.21.0"
@@ -20,10 +20,11 @@ python-multipart = "^0.0.5"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.2.0"
-black = "^22.10.0"
-mypy = "^0.991"
-flake8 = "^5.0.4"
+black = "^23.1.0"
+mypy = "^1.0.0"
+flake8 = "^6.0.0"
 pytest-asyncio = "^0.20.2"
+sqlalchemy-stubs = "^0.4"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
