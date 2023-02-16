@@ -190,7 +190,6 @@ class Mutation:
 
         return WeatherStation.from_model(new_weather_station)
 
-
     @strawberry.mutation(description="Remove weather station.", permission_classes=[IsAuthenticated])
     async def remove_weather_station(self, info: Info[AppContext, Any], resource_id: int) -> RemoveWeatherStationOutput:
         """Delete weather station from DB"""
