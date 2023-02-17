@@ -4,7 +4,7 @@ from fastapi import Depends, HTTPException, APIRouter
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
 
-from dependencies.database import get_database, Database
+from src.dependencies.database import get_database, Database
 from src import models
 from src.dependencies.auth import get_auth_weather_station
 from src.models import MonitorUser
