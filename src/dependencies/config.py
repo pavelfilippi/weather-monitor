@@ -1,19 +1,16 @@
-import os
 from functools import lru_cache
-from typing import Optional
-
-from dotenv import load_dotenv
-from pydantic import BaseSettings
-
-load_dotenv()
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Config(BaseSettings):
-    DB_HOST: Optional[str] = os.getenv("DB_HOST")
-    DB_PORT: Optional[str] = os.getenv("DB_PORT")
-    DB_USER: Optional[str] = os.getenv("DB_USER")
-    DB_PASS: Optional[str] = os.getenv("POSTGRES_PASSWORD")
-    DB_NAME: Optional[str] = os.getenv("POSTGRES_DB")
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+
+    DB_HOST: str = ""
+    DB_PORT: str = ""
+    DB_USER: str = ""
+    DB_PASS: str = Field(default="", alias="POSTGRES_PASSWORD")
+    DB_NAME: str = Field(default="", alias="POSTGRES_DB")
 
 
 @lru_cache()

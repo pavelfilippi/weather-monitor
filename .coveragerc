@@ -1,0 +1,10 @@
+[run]
+source = src
+omit =
+    alembic/*
+    tests/*
+    test/*
+
+[report]
+show_missing = True
+

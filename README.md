@@ -38,3 +38,10 @@ Users can add/update/delete weather station, limited by 'created by' - user can 
 5, some lack of code quality - ie. inconsistency of meteostation vs weather station naming  
 6, mypy/flake8 errors  
 7, lack of any automated tests  
+
+## Tests
+Run the suite with coverage:
+
+```bash
+poetry run pytest --cov=src --cov-report=term-missing --cov-fail-under=80
+```
