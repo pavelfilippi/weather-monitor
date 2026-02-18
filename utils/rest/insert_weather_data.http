@@ -2,6 +2,7 @@ POST http://127.0.0.1:8000/conditions
 accept: application/json
 Authorization: Bearer random_key
 Content-Type: application/json
+# Expected: 201 Created (returns inserted condition + station_id)
 
 {
   "time": "2022-11-24T11:01:37.123",

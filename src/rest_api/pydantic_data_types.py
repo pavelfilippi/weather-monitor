@@ -15,3 +15,7 @@ class StationCondition(BaseModel):
     temperature: Optional[float] = None
     humidity: Optional[float] = None
     pressure: Optional[float] = None
+
+
+class StationConditionResponse(StationCondition):
+    station_id: int

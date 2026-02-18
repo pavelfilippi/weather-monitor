@@ -8,16 +8,16 @@ from src.dependencies.auth import get_auth_weather_station
 
 
 @pytest.mark.asyncio
-async def test_token_unknown_user_returns_400(client):
+async def test_token_unknown_user_returns_401(client):
     resp = await client.post("/token", data={"username": "missing", "password": "pw"})
-    assert resp.status_code == 400
+    assert resp.status_code == 401
 
 
 @pytest.mark.asyncio
-async def test_token_wrong_password_returns_400(client, seed_user):
+async def test_token_wrong_password_returns_401(client, seed_user):
     await seed_user(username="alice", password="secret")
     resp = await client.post("/token", data={"username": "alice", "password": "wrong"})
-    assert resp.status_code == 400
+    assert resp.status_code == 401
 
 
 @pytest.mark.asyncio
@@ -52,7 +52,13 @@ async def test_conditions_valid_station_inserts_row(client, test_db, seed_statio
         "pressure": 1005.0,
     }
     resp = await client.post("/conditions", json=payload, headers={"Authorization": f"Bearer {station.api_key}"})
-    assert resp.status_code == 200
+    assert resp.status_code == 201
+    assert resp.json()["station_id"] == station.station_id
+    assert resp.json()["time"] == payload["time"]
+    assert resp.json()["battery_percentage"] == payload["battery_percentage"]
+    assert resp.json()["temperature"] == payload["temperature"]
+    assert resp.json()["humidity"] == payload["humidity"]
+    assert resp.json()["pressure"] == payload["pressure"]
 
     async with test_db.session() as session:
         result = await session.execute(select(models.StationCondition))
