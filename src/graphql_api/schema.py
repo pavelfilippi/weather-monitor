@@ -99,7 +99,7 @@ class StationUpdate:
     latitude: Optional[float] = None
     api_key: Optional[str] = None
 
-    def as_dict(self):
+    def as_dict(self) -> dict[str, Any]:
         original = dict(longitude=self.longitude, latitude=self.latitude, api_key=self.api_key)
         return {k: v for k, v in original.items() if v is not None}
 

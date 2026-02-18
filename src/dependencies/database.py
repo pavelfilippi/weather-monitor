@@ -30,7 +30,7 @@ class Database:
                 raise
 
 
-def get_database(config: Config = Depends(get_config)):
+def get_database(config: Config = Depends(get_config)) -> Database:
     """Database dependency factory"""
     return Database(f"postgresql+asyncpg://{config.DB_USER}:{config.DB_PASS}@{config.DB_HOST}/{config.DB_NAME}")
 

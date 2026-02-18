@@ -1,7 +1,6 @@
 from typing import Optional
 
 from fastapi import Depends
-from fastapi import Header
 from fastapi import Request
 from sqlalchemy import select
 
@@ -13,7 +12,6 @@ from src.models import WeatherStation
 async def get_auth_weather_station(
     request: Request,
     db: Database = Depends(get_database),
-    Authorization: str | None = Header(default="Bearer <api_key>"),
 ) -> Optional[WeatherStation]:
     """Get weather station based on request header API key"""
 
